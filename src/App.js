@@ -1,11 +1,11 @@
-import Transaction from './components/transactions/Transaction';
-import TRANSACTION_DATA from './api/mock-data'; 
+import TransactionList from './components/transactions/TransactionList';
+import PlacesList from './components/places/PlacesList';
 
 function App() {
     return (
         <div>
-        {TRANSACTION_DATA.map(trans => 
-            <Transaction {...trans}/> )}
+            <TransactionList />
+            <PlacesList />
         </div>
     );
 }
