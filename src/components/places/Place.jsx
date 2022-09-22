@@ -1,10 +1,11 @@
+import { memo, useCallback } from 'react';
 import StarRating from './StarRating';
 
-const Place = ({ id, name, rating, onRate }) => {
+const Place = memo(({ id, name, rating, onRate }) => {
 
-  const handleRate = (newRating) => {
+  const handleRate = useCallback((newRating) => {
     onRate(id, newRating);
-  }
+  }, [id, onRate])
 
   return (
     <div className="card bg-light border-dark mb-4">
@@ -17,6 +18,6 @@ const Place = ({ id, name, rating, onRate }) => {
       </div>
     </div>
   );
-}
+});
 
 export default Place;

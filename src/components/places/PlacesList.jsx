@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { PLACE_DATA } from '../../api/mock-data';
 import Place from './Place';
 
 const PlacesList = () => {
   const [places, setPlaces] = useState(PLACE_DATA);
 
-  const handleRatePlace = (id, rating) => {
+  const handleRatePlace = useCallback((id, rating) => {
     const newPlaces = places.map((p) => (p.id === id ? { ...p, rating } : p));
     setPlaces(newPlaces);
-  };
+  }, [places]);
 
   return (
     <>

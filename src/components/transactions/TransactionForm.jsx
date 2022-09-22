@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { memo } from 'react';
 import { PLACE_DATA } from '../../api/mock-data';
+import { useForm } from 'react-hook-form';
 
 const toDateInputString = (date) => {
     // ISO String without the trailing 'Z' is fine 🙄
@@ -15,19 +16,15 @@ const toDateInputString = (date) => {
     return asString.substring(0, asString.indexOf('T'));
 };
 
-export default function TransactionForm({ onSaveTransaction }) {
-    const [user, setUser] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [place, setPlace] = useState('home');
-    const [amount, setAmount] = useState(0);
+export default memo(function TransactionForm({ onSaveTransaction }) {
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSaveTransaction(user, place, amount, date);
-        setUser('');
-        setDate(new Date());
-        setPlace('home');
-        setAmount(0);
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+    const onSubmit = (data) => {
+        console.log(JSON.stringify(data));
+        const { user, place, amount, date } = data;
+        onSaveTransaction(user, place, parseInt(amount), toDateInputString(date));
+        reset();
     };
 
     return (
@@ -35,28 +32,32 @@ export default function TransactionForm({ onSaveTransaction }) {
             <h2>
                 Add transaction
             </h2>
-            <form onSubmit={handleSubmit} className="w-50 mb-3">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-50 mb-3">
                 <div className="mb-3">
                     <label htmlFor="date" className="form-label">Who</label>
                     <input
-                        value={user}
-                        onChange={(e) => setUser(e.target.value)}
+                        {...register('user',
+                            { required: 'user is required', minLength: { value: 2, message: 'Min length is 2' } })}
+                        defaultValue=''
                         id="user"
                         type="text"
                         className="form-control"
                         placeholder="user" required
                     />
+                    {errors.user && <p className="form-text text-danger">{errors.user.message}</p>}
                 </div>
+
                 <div className="mb-3">
                     <label htmlFor="date" className="form-label">Date</label>
                     <input
-                        value={toDateInputString(date)}
-                        onChange={(e) => setDate(e.target.value)}
+                        {...register('date',
+                            { required: 'date is required' })}
                         id="date"
                         type="date"
                         className="form-control"
                         placeholder="date"
                     />
+                    {errors.date && <p className="form-text text-danger">{errors.date.message}</p>}
                 </div>
 
                 <div className="mb-3">
@@ -64,8 +65,8 @@ export default function TransactionForm({ onSaveTransaction }) {
                         Place
                     </label>
                     <select
-                        value={place}
-                        onChange={(e) => setPlace(e.target.value)}
+                        {...register('place',
+                            { required: 'place is required' })}
                         id="places"
                         className="form-select"
                         required
@@ -75,6 +76,7 @@ export default function TransactionForm({ onSaveTransaction }) {
                             <option key={id} value={name}>{name}</option>
                         ))}
                     </select>
+                    {errors.place && <p className="form-text text-danger">{errors.place.message}</p>}
                 </div>
 
                 <div className="mb-3">
@@ -82,13 +84,14 @@ export default function TransactionForm({ onSaveTransaction }) {
                         Amount
                     </label>
                     <input
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
+                        {...register('amount',
+                            { required: 'amount is required' })}
                         id="amount"
                         type="number"
                         className="form-control"
                         required
                     />
+                    {errors.amount && <p className="form-text text-danger">{errors.amount.message}</p>}
                 </div>
 
                 <div className="clearfix">
@@ -102,4 +105,4 @@ export default function TransactionForm({ onSaveTransaction }) {
             </form>
         </>
     );
-}
+})
