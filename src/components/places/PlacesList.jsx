@@ -10,6 +10,10 @@ const PlacesList = () => {
     setPlaces(newPlaces);
   }, [places]);
 
+  const handleDeletePLace = useCallback((id) => {
+    setPlaces((places) => places.filter((p) => p.id !== id));
+  }, []);
+
   return (
     <>
       <h1>Places</h1>
@@ -21,7 +25,7 @@ const PlacesList = () => {
             )
             .map((p) => (
               <div className="col" key={p.id}>
-                <Place {...p} onRate={handleRatePlace} />
+                <Place {...p} onRate={handleRatePlace} onDelete={handleDeletePLace} />
               </div>
             ))}
         </div>

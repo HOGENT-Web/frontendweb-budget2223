@@ -2,13 +2,17 @@ import { memo, useCallback, useContext } from 'react';
 import { ThemeContext } from '../../contexts/Theme.context';
 import StarRating from './StarRating';
 
-const Place = memo(({ id, name, rating, onRate }) => {
+const Place = memo(({ id, name, rating, onRate, onDelete }) => {
 
   const { theme, oppositeTheme } = useContext(ThemeContext);
 
   const handleRate = useCallback((newRating) => {
     onRate(id, newRating);
   }, [id, onRate])
+
+  const handleDelete = useCallback(() => {
+    onDelete(id);
+  }, [id, onDelete]);
 
   return (
     <div className={`card bg-${theme} border-${oppositeTheme} mb-4`}>
@@ -18,6 +22,9 @@ const Place = memo(({ id, name, rating, onRate }) => {
           selectedStars={rating}
           onRate={handleRate}
         />
+        <button class="btn btn-primary" onClick={handleDelete}>
+          Verwijder
+        </button>
       </div>
     </div>
   );
