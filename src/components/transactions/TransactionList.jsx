@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useContext } from 'react';
+import { ThemeContext } from '../../contexts/Theme.context';
 import Transaction from './Transaction';
 import TransactionForm from './TransactionForm';
 import { TRANSACTION_DATA } from '../../api/mock-data';
@@ -6,6 +7,7 @@ import { TRANSACTION_DATA } from '../../api/mock-data';
 function TransactionTable({
   transactions
 }) {
+  const { theme } = useContext(ThemeContext);
   if (transactions.length === 0) {
     return (
       <div className="alert alert-info">
@@ -15,8 +17,8 @@ function TransactionTable({
   }
 
   return (
-    <div className="table-responsive">
-      <table className={`table table-hover`}>
+    <div>
+      <table className={`table table-hover table-responsive table-${theme}`}>
         <thead>
           <tr>
             <th>Date</th>
@@ -37,7 +39,6 @@ function TransactionTable({
 }
 
 export default function TransactionList() {
-
   const [transactions, setTransactions] = useState(TRANSACTION_DATA);
   const [text, setText] = useState('');
   const [search, setSearch] = useState('');
@@ -64,6 +65,8 @@ export default function TransactionList() {
         <input type="search" id="search" className="form-control rounded" placeholder="Search" value={text} onChange={(e) => setText(e.target.value)} />
         <button type="button" className="btn btn-outline-primary" onClick={() => setSearch(text)}>Search</button>
       </div>
-      <TransactionTable transactions={filteredTransactions} />
+      <div className="mt-4">
+        <TransactionTable transactions={filteredTransactions} />
+      </div>
     </>);
 }

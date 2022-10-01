@@ -1,6 +1,21 @@
 import { memo } from 'react';
 import { PLACE_DATA } from '../../api/mock-data';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+
+const validationRules = {
+    user: {
+        required: 'this is required',
+        minLength: { value: 2, message: 'Min length is 2' },
+    },
+    date: { required: 'this is required' },
+    place: { required: 'this is required' },
+    amount: {
+        valueAsNumber: true,
+        required: 'this is required',
+        min: { value: 1, message: 'min 1' },
+        max: { value: 5000, message: 'max 5000' },
+    }
+};
 
 const toDateInputString = (date) => {
     // ISO String without the trailing 'Z' is fine 🙄
@@ -15,6 +30,92 @@ const toDateInputString = (date) => {
     let asString = date.toISOString();
     return asString.substring(0, asString.indexOf('T'));
 };
+
+function LabelInput({ label, name, type, ...rest }) {
+    const {
+        register,
+        errors
+    } = useFormContext();
+
+    const hasError = name in errors;
+
+    return (
+        <div className="mb-3">
+            <label htmlFor={name} className="form-label">
+                {label}
+            </label>
+            <input
+                {...register(name, validationRules[name])}
+                id={name}
+                type={type}
+                className="form-control"
+                {...rest}
+            />
+            {hasError ? (
+                <div className="form-text text-danger">
+                    {errors[name].message}
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
+
+function PlacesSelect() {
+    const name = "place";
+
+    const {
+        register,
+        errors,
+    } = useFormContext();
+
+    const hasError = name in errors;
+    <div className="mb-3">
+        <label htmlFor="places" className="form-label">
+            Place
+        </label>
+        <select
+            {...register('place', validationRules.place)}
+            id="places"
+            className="form-select"
+        >
+            <option defaultChecked value="">-- Select a place --</option>
+            {PLACE_DATA.map(({ id, name }) => (
+                <option key={id} value={name}>{name}</option>
+            ))}
+        </select>
+        {hasError ? (
+            <div className="form-text text-danger">
+                {errors[name].message}
+            </div>
+        ) : null}
+    </div>
+
+    return (
+        <div className="mb-3">
+            <label htmlFor={name} className="form-label">
+                Place
+            </label>
+            <select
+                {...register(name)}
+                id={name}
+                className="form-select"
+            >
+                <option defaultChecked value="">-- Select a place --</option>
+                {PLACE_DATA.map(({ id, name }) => (
+                    <option key={id} value={name}>{name}</option>
+                ))}
+            </select>
+            {hasError ? (
+                <div className="form-text text-danger">
+                    {errors[name].message}
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
+
 
 export default memo(function TransactionForm({ onSaveTransaction }) {
 
@@ -32,77 +133,35 @@ export default memo(function TransactionForm({ onSaveTransaction }) {
             <h2>
                 Add transaction
             </h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="w-50 mb-3">
-                <div className="mb-3">
-                    <label htmlFor="date" className="form-label">Who</label>
-                    <input
-                        {...register('user',
-                            { required: 'user is required', minLength: { value: 2, message: 'Min length is 2' } })}
-                        defaultValue=''
-                        id="user"
-                        type="text"
-                        className="form-control"
-                        placeholder="user" required
-                    />
-                    {errors.user && <p className="form-text text-danger">{errors.user.message}</p>}
-                </div>
+            <FormProvider handleSubmit={handleSubmit} errors={errors} register={register}>
+                <form onSubmit={handleSubmit(onSubmit)} className="w-50 mb-3">
+                    <LabelInput
+                        label="User"
+                        name="user"
+                        type="user" />
 
-                <div className="mb-3">
-                    <label htmlFor="date" className="form-label">Date</label>
-                    <input
-                        {...register('date',
-                            { required: 'date is required' })}
-                        id="date"
-                        type="date"
-                        className="form-control"
-                        placeholder="date"
-                    />
-                    {errors.date && <p className="form-text text-danger">{errors.date.message}</p>}
-                </div>
+                    <LabelInput
+                        label="Date"
+                        name="date"
+                        type="date" />
 
-                <div className="mb-3">
-                    <label htmlFor="places" className="form-label">
-                        Place
-                    </label>
-                    <select
-                        {...register('place',
-                            { required: 'place is required' })}
-                        id="places"
-                        className="form-select"
-                        required
-                    >
-                        <option defaultChecked value="">-- Select a place --</option>
-                        {PLACE_DATA.map(({ id, name }) => (
-                            <option key={id} value={name}>{name}</option>
-                        ))}
-                    </select>
-                    {errors.place && <p className="form-text text-danger">{errors.place.message}</p>}
-                </div>
+                    <PlacesSelect />
 
-                <div className="mb-3">
-                    <label htmlFor="amount" className="form-label">
-                        Amount
-                    </label>
-                    <input
-                        {...register('amount',
-                            { required: 'amount is required' })}
-                        id="amount"
-                        type="number"
-                        className="form-control"
-                        required
-                    />
-                    {errors.amount && <p className="form-text text-danger">{errors.amount.message}</p>}
-                </div>
+                    <LabelInput
+                        label="Amount"
+                        name="amount"
+                        type="amount" />
 
-                <div className="clearfix">
-                    <div className="btn-group float-end">
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                        >Add transaction</button>
+                    <div className="clearfix">
+                        <div className="btn-group float-end">
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                            >Add transaction</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </FormProvider>
         </>
     );
 })
