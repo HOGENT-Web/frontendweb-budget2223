@@ -2,7 +2,8 @@ import {
   createContext,
   useState,
   useCallback,
-  useMemo
+  useMemo,
+  useContext
 } from 'react';
 
 export const themes = {
@@ -12,11 +13,18 @@ export const themes = {
 
 export const ThemeContext = createContext();
 
+export const useTheme = () => useContext(ThemeContext);
+
+export const useThemeColors = () => {
+  const { theme, oppositeTheme } = useContext(ThemeContext);
+  return { theme, oppositeTheme };
+};
+
 export const ThemeProvider = ({
   children
 }) => {
 
-  const [theme, setTheme] = useState(sessionStorage.getItem('themeMode') || themes.dark);//
+  const [theme, setTheme] = useState(sessionStorage.getItem('themeMode') || themes.dark);
 
   const toggleTheme = useCallback(() => {
     const newThemeValue = theme === themes.dark ? themes.light : themes.dark;

@@ -70,26 +70,6 @@ function PlacesSelect() {
     } = useFormContext();
 
     const hasError = name in errors;
-    <div className="mb-3">
-        <label htmlFor="places" className="form-label">
-            Place
-        </label>
-        <select
-            {...register('place', validationRules.place)}
-            id="places"
-            className="form-select"
-        >
-            <option defaultChecked value="">-- Select a place --</option>
-            {PLACE_DATA.map(({ id, name }) => (
-                <option key={id} value={name}>{name}</option>
-            ))}
-        </select>
-        {hasError ? (
-            <div className="form-text text-danger">
-                {errors[name].message}
-            </div>
-        ) : null}
-    </div>
 
     return (
         <div className="mb-3">
