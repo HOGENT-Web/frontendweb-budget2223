@@ -1,4 +1,5 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
+import { IoTrashOutline, IoPencil } from 'react-icons/io5';
 
 // kan ook met react-intl (https://formatjs.io/docs/getting-started/installation/)
 const dateFormat = new Intl.DateTimeFormat('nl-BE', {
@@ -14,19 +15,36 @@ const amountFormat = new Intl.NumberFormat('nl-BE', {
   minimumFractionDigits: 2,
 });
 
-export default memo(function Transaction({ user, amount, place, date }) {
+export default memo(function Transaction({ id, user, amount, place, date, onDelete, onEdit }) {
+
+  const handleDelete = useCallback((event) => {
+    event.preventDefault();
+    onDelete(id);
+  }, [id, onDelete]);
+
+  const handleUpdate = useCallback((event) => {
+    event.preventDefault();
+    onEdit(id);
+  }, [id, onEdit]);
+
   return (
     <tr>
       <td>
         {dateFormat.format(new Date(date))}
       </td>
-      <td>{user}</td>
-      <td>{place}</td>
+      <td>{user.name}</td>
+      <td>{place.name}</td>
       <td>
         {amountFormat.format(amount)}
       </td>
       <td>
         <div className="btn-group float-end">
+          <button type="button" className="btn btn-light" onClick={handleUpdate}>
+            <IoPencil />
+          </button>
+          <button type="button" className="btn btn-danger" onClick={handleDelete}>
+            <IoTrashOutline />
+          </button>
         </div>
       </td>
     </tr>

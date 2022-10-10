@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import { PLACE_DATA } from '../../api/mock-data';
+import { memo, useEffect, useState } from 'react';
+import * as placesApi from '../../api/places';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 
 const validationRules = {
@@ -34,7 +34,7 @@ const toDateInputString = (date) => {
 function LabelInput({ label, name, type, ...rest }) {
     const {
         register,
-        errors
+        errors, isSubmitting
     } = useFormContext();
 
     const hasError = name in errors;
@@ -49,6 +49,7 @@ function LabelInput({ label, name, type, ...rest }) {
                 id={name}
                 type={type}
                 className="form-control"
+                disabled={isSubmitting}
                 {...rest}
             />
             {hasError ? (
@@ -63,11 +64,33 @@ function LabelInput({ label, name, type, ...rest }) {
 
 function PlacesSelect() {
     const name = "place";
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [places, setPlaces] = useState([]);
 
     const {
         register,
-        errors,
+        errors, isSubmitting
     } = useFormContext();
+
+    useEffect(() => {
+        const fetchPlaces = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const places = await placesApi.getAll();
+                setPlaces(places);
+            } catch (error) {
+                console.error(error);
+                setError(error.message || 'Failed to fetch the places, try again later');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPlaces();
+    }, []);
+
 
     const hasError = name in errors;
 
@@ -80,10 +103,13 @@ function PlacesSelect() {
                 {...register(name)}
                 id={name}
                 className="form-select"
+                disabled={loading || error || isSubmitting}
             >
-                <option defaultChecked value="">-- Select a place --</option>
-                {PLACE_DATA.map(({ id, name }) => (
-                    <option key={id} value={name}>{name}</option>
+                <option defaultChecked>
+                    {loading ? 'Loading places... ' : (error || '-- Select a place --')}
+                </option>
+                {places.map(({ id, name }) => (
+                    <option key={id} value={id}>{name}</option>
                 ))}
             </select>
             {hasError ? (
@@ -97,23 +123,44 @@ function PlacesSelect() {
 
 
 
-export default memo(function TransactionForm({ onSaveTransaction }) {
-
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+export default memo(function TransactionForm({ currentTransaction, onSaveTransaction }) {
+    const { setValue, register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
 
     const onSubmit = (data) => {
-        console.log(JSON.stringify(data));
         const { user, place, amount, date } = data;
-        onSaveTransaction(user, place, parseInt(amount), toDateInputString(date));
+        let transaction = {
+            user,
+            placeId: place,
+            amount: parseInt(amount),
+            date: new Date(date)
+        };
+        onSaveTransaction({ ...transaction, id: currentTransaction?.id })
         reset();
     };
 
+    useEffect(() => {
+        if (
+            // check on non-empty object
+            currentTransaction &&
+            (Object.keys(currentTransaction).length !== 0 ||
+                currentTransaction.constructor !== Object)
+        ) {
+            const dateAsString = toDateInputString(new Date(currentTransaction.date));
+            setValue("date", dateAsString);
+            setValue("user", currentTransaction.user.name);
+            setValue("place", currentTransaction.place.id);
+            console.log(currentTransaction.place.id);
+            setValue("amount", currentTransaction.amount);
+        } else {
+            reset();
+        }
+    }, [currentTransaction, setValue, reset]);
     return (
         <>
             <h2>
                 Add transaction
             </h2>
-            <FormProvider handleSubmit={handleSubmit} errors={errors} register={register}>
+            <FormProvider handleSubmit={handleSubmit} errors={errors} register={register} isSubmitting={isSubmitting}>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-50 mb-3">
                     <LabelInput
                         label="User"
@@ -136,8 +183,11 @@ export default memo(function TransactionForm({ onSaveTransaction }) {
                         <div className="btn-group float-end">
                             <button
                                 type="submit"
+                                disabled={isSubmitting}
                                 className="btn btn-primary"
-                            >Add transaction</button>
+                            > {currentTransaction?.id
+                                ? "Save transaction"
+                                : "Add transaction"}</button>
                         </div>
                     </div>
                 </form>
