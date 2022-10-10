@@ -1,10 +1,10 @@
-import { memo, useCallback, useContext } from 'react';
-import { ThemeContext } from '../../contexts/Theme.context';
+import { memo, useCallback } from 'react';
+import { useThemeColors } from '../../contexts/Theme.context';
 import StarRating from './StarRating';
 
 const Place = memo(({ id, name, rating, onRate, onDelete }) => {
 
-  const { theme, oppositeTheme } = useContext(ThemeContext);
+  const { theme, oppositeTheme } = useThemeColors();
 
   const handleRate = useCallback((newRating) => {
     onRate(id, newRating);
@@ -22,7 +22,7 @@ const Place = memo(({ id, name, rating, onRate, onDelete }) => {
           selectedStars={rating}
           onRate={handleRate}
         />
-        <button class="btn btn-primary" onClick={handleDelete}>
+        <button className="btn btn-primary" onClick={handleDelete}>
           Verwijder
         </button>
       </div>

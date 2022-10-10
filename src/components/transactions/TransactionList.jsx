@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback, useContext } from 'react';
-import { ThemeContext } from '../../contexts/Theme.context';
+import { useState, useMemo, useCallback } from 'react';
+import { useThemeColors } from '../../contexts/Theme.context';
 import Transaction from './Transaction';
 import TransactionForm from './TransactionForm';
 import { TRANSACTION_DATA } from '../../api/mock-data';
@@ -7,7 +7,7 @@ import { TRANSACTION_DATA } from '../../api/mock-data';
 function TransactionTable({
   transactions
 }) {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useThemeColors();
   if (transactions.length === 0) {
     return (
       <div className="alert alert-info">
@@ -18,7 +18,7 @@ function TransactionTable({
 
   return (
     <div>
-      <table className={`table table-hover table-responsive table-${theme}`}>
+      <table className={`table table-hover table-responsive table-${theme} `}>
         <thead>
           <tr>
             <th>Date</th>
@@ -29,8 +29,8 @@ function TransactionTable({
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction) => (
-            <Transaction key={transaction.id} {...transaction} />
+          {transactions.map((transaction, index) => (
+            <Transaction key={index} {...transaction} />
           ))}
         </tbody>
       </table>
