@@ -1,4 +1,5 @@
 import { memo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { IoTrashOutline, IoPencil } from 'react-icons/io5';
 
 // kan ook met react-intl (https://formatjs.io/docs/getting-started/installation/)
@@ -15,17 +16,11 @@ const amountFormat = new Intl.NumberFormat('nl-BE', {
   minimumFractionDigits: 2,
 });
 
-export default memo(function Transaction({ id, user, amount, place, date, onDelete, onEdit }) {
-
+export default memo(function Transaction({ id, user, amount, place, date, onDelete }) {
   const handleDelete = useCallback((event) => {
     event.preventDefault();
     onDelete(id);
   }, [id, onDelete]);
-
-  const handleUpdate = useCallback((event) => {
-    event.preventDefault();
-    onEdit(id);
-  }, [id, onEdit]);
 
   return (
     <tr>
@@ -39,9 +34,9 @@ export default memo(function Transaction({ id, user, amount, place, date, onDele
       </td>
       <td>
         <div className="btn-group float-end">
-          <button type="button" className="btn btn-light" onClick={handleUpdate}>
+          <Link type="button" className="btn btn-light" to={`/transactions/edit/${id}`}>
             <IoPencil />
-          </button>
+          </Link>
           <button type="button" className="btn btn-danger" onClick={handleDelete}>
             <IoTrashOutline />
           </button>

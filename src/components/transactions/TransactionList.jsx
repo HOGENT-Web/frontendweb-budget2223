@@ -1,13 +1,13 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useThemeColors } from '../../contexts/Theme.context';
 import Transaction from './Transaction';
-import TransactionForm from './TransactionForm';
 import * as transactionsApi from '../../api/transactions';
 import Error from '../Error';
 import Loader from '../Loader';
+import { Link } from 'react-router-dom';
 
 function TransactionTable({
-  transactions, onEdit, onDelete
+  transactions, onDelete
 }) {
   const { theme } = useThemeColors();
   if (transactions.length === 0) {
@@ -32,7 +32,7 @@ function TransactionTable({
         </thead>
         <tbody>
           {transactions.map((transaction) => (
-            <Transaction key={transaction.id} {...transaction} onDelete={onDelete} onEdit={onEdit} />
+            <Transaction key={transaction.id} {...transaction} onDelete={onDelete} />
           ))}
         </tbody>
       </table>
@@ -46,7 +46,6 @@ export default function TransactionList() {
   const [search, setSearch] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentTransaction, setCurrentTransaction] = useState({});
 
   const refreshTransactions = useCallback(async () => {
     try {
@@ -78,27 +77,6 @@ export default function TransactionList() {
     }
   }, []);
 
-  const setTransactionToUpdate = useCallback((id) => {
-    setCurrentTransaction(id === null ? {} : transactions.find((t) => t.id === id));
-  }, [transactions]);
-  //...
-
-  const handleSaveTransaction = useCallback(async (transaction) => {
-    try {
-      setError(null);
-      await transactionsApi.save({
-        ...transaction,
-      });
-      setCurrentTransaction({});
-      await refreshTransactions();
-    } catch (error) {
-      console.error(error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [refreshTransactions]);
-
   const filteredTransactions = useMemo(() => transactions.filter((t) => {
     return t.place.name.toLowerCase().includes(search.toLowerCase());
   }), [search, transactions])
@@ -106,16 +84,22 @@ export default function TransactionList() {
   return (
     <>
       <h1>Transactions</h1>
-      <TransactionForm onSaveTransaction={handleSaveTransaction} currentTransaction={currentTransaction} />
       <div className="input-group mb-3 w-50">
         <input type="search" id="search" className="form-control rounded" placeholder="Search" value={text} onChange={(e) => setText(e.target.value)} />
         <button type="button" className="btn btn-outline-primary" onClick={() => setSearch(text)}>Search</button>
+        <Link className="btn btn-primary" to="/transactions/add">Add a transaction</Link>
       </div>
       <div className="mt-4">
         <Loader loading={loading} />
         <Error error={error} />
 
-        {!loading && !error ? <TransactionTable transactions={filteredTransactions} onDelete={handleDelete} onEdit={setTransactionToUpdate} /> : null}{/* 👈 5 */}
+        {
+          !loading && !error
+            ? (<TransactionTable
+                transactions={filteredTransactions}
+                onDelete={handleDelete} />)
+            : null
+        }
       </div>
     </>);
 }

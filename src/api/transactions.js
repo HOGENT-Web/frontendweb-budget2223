@@ -10,6 +10,14 @@ export const getAll = async () => {
   return data.items;
 };
 
+export const getById = async (id) => {
+  const {
+    data
+  } = await axios.get(`${baseUrl}/${id}`);
+
+  return data;
+};
+
 export const deleteById = async (id) => {
   await axios.delete(
     `${baseUrl}/${id}`

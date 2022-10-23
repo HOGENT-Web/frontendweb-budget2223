@@ -1,30 +1,29 @@
+import { Routes, Route, Navigate } from 'react-router-dom';
 import TransactionList from './components/transactions/TransactionList';
+import TransactionForm from './components/transactions/TransactionForm';
 import PlacesList from './components/places/PlacesList';
 import {
     useTheme,
-    themes
 } from './contexts/Theme.context';
-import {
-    IoMoonSharp,
-    IoSunny
-} from 'react-icons/io5';
+import Navbar from './components/Navbar';
 
 function App() {
     const {
         theme,
         oppositeTheme,
-        toggleTheme
     } = useTheme();
 
     return (
-        <div className={`container-xl bg-${theme} text-${oppositeTheme}`} >
-            <button type="button" onClick={toggleTheme} >
-                {
-                    theme === themes.dark ? <IoMoonSharp /> : <IoSunny />
-                }
-            </button>
-            <TransactionList />
-            <PlacesList />
+        <div className={`container-xl bg-${theme} text-${oppositeTheme}`}>
+            <Navbar />
+            
+            <Routes>
+                <Route path="/" element={<Navigate to="/transactions" />} />
+                <Route path="/transactions" element={<TransactionList />} />
+                <Route path="/transactions/add" element={<TransactionForm />} />
+                <Route path="/transactions/edit/:id" element={<TransactionForm />} />
+                <Route path="/places" element={<PlacesList />} />
+            </Routes>
         </div>
     );
 }

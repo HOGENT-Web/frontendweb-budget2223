@@ -1,6 +1,9 @@
 import { memo, useEffect, useState } from 'react';
+import * as transactionsApi from '../../api/transactions';
 import * as placesApi from '../../api/places';
+import Error from '../Error';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router';
 
 const validationRules = {
     user: {
@@ -123,43 +126,60 @@ function PlacesSelect() {
 
 
 
-export default memo(function TransactionForm({ currentTransaction, onSaveTransaction }) {
+export default memo(function TransactionForm() {
+    const [error, setError] = useState(null);
     const { setValue, register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
+    const navigate = useNavigate();
+    const { id } = useParams();
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         const { user, place, amount, date } = data;
-        let transaction = {
-            user,
-            placeId: place,
-            amount: parseInt(amount),
-            date: new Date(date)
-        };
-        onSaveTransaction({ ...transaction, id: currentTransaction?.id })
-        reset();
+        try {
+            setError(null);
+            await transactionsApi.save({
+                id,
+                user,
+                placeId: place,
+                amount: parseInt(amount),
+                date: new Date(date)
+            });
+            navigate('/');
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        }
     };
 
     useEffect(() => {
-        if (
-            // check on non-empty object
-            currentTransaction &&
-            (Object.keys(currentTransaction).length !== 0 ||
-                currentTransaction.constructor !== Object)
-        ) {
-            const dateAsString = toDateInputString(new Date(currentTransaction.date));
-            setValue("date", dateAsString);
-            setValue("user", currentTransaction.user.name);
-            setValue("place", currentTransaction.place.id);
-            console.log(currentTransaction.place.id);
-            setValue("amount", currentTransaction.amount);
-        } else {
+        if (!id) {
             reset();
+            return;
         }
-    }, [currentTransaction, setValue, reset]);
+
+        const fetchTransaction = async () => {
+            try {
+                setError(null);
+                const transaction = await transactionsApi.getById(id);
+                setValue('user', transaction.user.name);
+                setValue('place', `${transaction.place.id}`); // HTML select values are strings
+                setValue('amount', transaction.amount);
+                setValue('date', toDateInputString(transaction.date));
+            } catch (error) {
+                console.error(error);
+                setError(error);
+            }
+        };
+
+        fetchTransaction();
+    }, [id, setValue, reset]);
+
     return (
         <>
             <h2>
                 Add transaction
             </h2>
+            <Error error={error} />
+
             <FormProvider handleSubmit={handleSubmit} errors={errors} register={register} isSubmitting={isSubmitting}>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-50 mb-3">
                     <LabelInput
@@ -185,7 +205,7 @@ export default memo(function TransactionForm({ currentTransaction, onSaveTransac
                                 type="submit"
                                 disabled={isSubmitting}
                                 className="btn btn-primary"
-                            > {currentTransaction?.id
+                            > {id
                                 ? "Save transaction"
                                 : "Add transaction"}</button>
                         </div>

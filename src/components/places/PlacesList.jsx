@@ -48,7 +48,6 @@ const PlacesList = () => {
   const handleRatePlace = useCallback(async (updatedPlace) => {
     try {
       setError(null);
-      console.log(updatedPlace)
       await placesApi.save(updatedPlace);
       // of gewoon opnieuw ophalen
       setPlaces((places) => places.map((place) => place.id === updatedPlace?.id ? updatedPlace : place));
