@@ -56,7 +56,7 @@ function LabelInput({ label, name, type, ...rest }) {
                 {...rest}
             />
             {hasError ? (
-                <div className="form-text text-danger">
+                <div className="form-text text-danger" data-cy="labelinput-error">
                     {errors[name].message}
                 </div>
             ) : null}

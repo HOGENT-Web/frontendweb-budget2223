@@ -85,8 +85,8 @@ export default function TransactionList() {
     <>
       <h1>Transactions</h1>
       <div className="input-group mb-3 w-50">
-        <input type="search" id="search" className="form-control rounded" placeholder="Search" value={text} onChange={(e) => setText(e.target.value)} />
-        <button type="button" className="btn btn-outline-primary" onClick={() => setSearch(text)}>Search</button>
+        <input type="search" id="search" className="form-control rounded" placeholder="Search" value={text} onChange={(e) => setText(e.target.value)} data-cy="transactions_search_input" />
+        <button type="button" className="btn btn-outline-primary" onClick={() => setSearch(text)} data-cy="transactions_search_btn">Search</button>
         <Link className="btn btn-primary" to="/transactions/add">Add a transaction</Link>
       </div>
       <div className="mt-4">
@@ -96,8 +96,8 @@ export default function TransactionList() {
         {
           !loading && !error
             ? (<TransactionTable
-                transactions={filteredTransactions}
-                onDelete={handleDelete} />)
+              transactions={filteredTransactions}
+              onDelete={handleDelete} />)
             : null
         }
       </div>
