@@ -65,7 +65,7 @@ function LabelInput({ label, name, type, ...rest }) {
 }
 
 
-function PlacesSelect() {
+function PlacesSelect(props) {
     const name = "place";
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -104,6 +104,7 @@ function PlacesSelect() {
             </label>
             <select
                 {...register(name)}
+                {...props}
                 id={name}
                 className="form-select"
                 disabled={loading || error || isSubmitting}
