@@ -186,19 +186,22 @@ export default memo(function TransactionForm() {
                     <LabelInput
                         label="User"
                         name="user"
-                        type="user" />
+                        type="user"
+                        data-cy="user_input" />
 
                     <LabelInput
                         label="Date"
                         name="date"
-                        type="date" />
+                        type="date"
+                        data-cy="date_input" />
 
-                    <PlacesSelect />
+                    <PlacesSelect data-cy="place_input" />
 
                     <LabelInput
                         label="Amount"
                         name="amount"
-                        type="amount" />
+                        type="amount"
+                        data-cy="amount_input" />
 
                     <div className="clearfix">
                         <div className="btn-group float-end">
@@ -206,6 +209,7 @@ export default memo(function TransactionForm() {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className="btn btn-primary"
+                                data-cy="submit_transaction"
                             > {id
                                 ? "Save transaction"
                                 : "Add transaction"}</button>
