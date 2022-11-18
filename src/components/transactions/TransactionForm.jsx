@@ -162,7 +162,7 @@ export default memo(function TransactionForm() {
                 setError(null);
                 const transaction = await transactionsApi.getById(id);
                 setValue('user', transaction.user.name);
-                setValue('place', `${transaction.place.id}`); // HTML select values are strings
+                setValue('place', transaction.place.id);
                 setValue('amount', transaction.amount);
                 setValue('date', toDateInputString(transaction.date));
             } catch (error) {
