@@ -1,13 +1,15 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import {
+  useState, useMemo, useCallback, useEffect,
+} from 'react';
+import { Link } from 'react-router-dom';
 import { useThemeColors } from '../../contexts/Theme.context';
 import Transaction from './Transaction';
-import * as transactionsApi from '../../api/transactions';
+import useTransactions from '../../api/transactions';
 import Error from '../Error';
 import Loader from '../Loader';
-import { Link } from 'react-router-dom';
 
 function TransactionTable({
-  transactions, onDelete
+  transactions, onDelete,
 }) {
   const { theme } = useThemeColors();
   if (transactions.length === 0) {
@@ -27,7 +29,7 @@ function TransactionTable({
             <th>User</th>
             <th>Place</th>
             <th>Amount</th>
-            <th></th>
+            <th>&nbsp</th>
           </tr>
         </thead>
         <tbody>
@@ -46,20 +48,21 @@ export default function TransactionList() {
   const [search, setSearch] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { getAll, deleteById } = useTransactions();
 
   const refreshTransactions = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await transactionsApi.getAll();
+      const data = await getAll();
       setTransactions(data);
-    } catch (error) {
-      console.error(error);
-      setError(error);
+    } catch (err) {
+      console.error(err);
+      setError(err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [getAll]);
 
   useEffect(() => {
     refreshTransactions();
@@ -68,18 +71,20 @@ export default function TransactionList() {
   const handleDelete = useCallback(async (idToDelete) => {
     try {
       setError(null);
-      await transactionsApi.deleteById(idToDelete);
+      await deleteById(idToDelete);
       // of gewoon opnieuw ophalen
-      setTransactions((transactions) => transactions.filter(({ id }) => id !== idToDelete));
-    } catch (error) {
-      console.error(error);
-      setError(error);
+      setTransactions((list) => list.filter(({ id }) => id !== idToDelete));
+    } catch (err) {
+      console.error(err);
+      setError(err);
     }
-  }, []);
+  }, [deleteById]);
 
-  const filteredTransactions = useMemo(() => transactions.filter((t) => {
-    return t.place.name.toLowerCase().includes(search.toLowerCase());
-  }), [search, transactions])
+  const filteredTransactions = useMemo(
+    () => transactions.filter((t) => t.place.name.toLowerCase()
+      .includes(search.toLowerCase())),
+    [search, transactions],
+  );
 
   return (
     <>
@@ -95,11 +100,15 @@ export default function TransactionList() {
 
         {
           !loading && !error
-            ? (<TransactionTable
-              transactions={filteredTransactions}
-              onDelete={handleDelete} />)
+            ? (
+              <TransactionTable
+                transactions={filteredTransactions}
+                onDelete={handleDelete}
+              />
+            )
             : null
         }
       </div>
-    </>);
+    </>
+  );
 }

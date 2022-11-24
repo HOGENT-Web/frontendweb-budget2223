@@ -15,18 +15,29 @@ const Star = memo(({ index, selected = false, onSelect = (f) => f }) => {
 });
 
 export default function StarRating({ totalStars = 5, selectedStars = 0, onRate }) {
-
   const stars = useMemo(
     () => [...new Array(totalStars)],
-    [totalStars]
+    [totalStars],
   );
 
   return (
     <>
-      {stars.map((_, i) => <Star key={i} index={i} selected={selectedStars > i}
-        onSelect={onRate} />)}
+      {stars.map((_, i) => (
+        <Star
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          index={i}
+          selected={selectedStars > i}
+          onSelect={onRate}
+        />
+      ))}
       <p>
-        {selectedStars} of {totalStars} stars
+        {selectedStars}
+        {' '}
+        of
+        {totalStars}
+        {' '}
+        stars
       </p>
     </>
   );

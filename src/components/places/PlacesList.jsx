@@ -4,14 +4,12 @@ import Place from './Place';
 import Error from '../Error';
 import Loader from '../Loader';
 
-const PlacesCards = ({ places, onRate }) => {
+function PlacesCards({ places, onRate }) {
   return (
     <div className="grid">
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 g-3">
         {places
-          .sort((a, b) =>
-            a.name.toUpperCase().localeCompare(b.name.toUpperCase())
-          )
+          .sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()))
           .map((p) => (
             <div className="col" key={p.id}>
               <Place {...p} onRate={onRate} />
@@ -22,7 +20,7 @@ const PlacesCards = ({ places, onRate }) => {
   );
 }
 
-const PlacesList = () => {
+function PlacesList() {
   const [places, setPlaces] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,9 +32,9 @@ const PlacesList = () => {
         setError(null);
         const data = await placesApi.getAll();
         setPlaces(data);
-      } catch (error) {
-        console.error(error);
-        setError(error);
+      } catch (err) {
+        console.error(err);
+        setError(err);
       } finally {
         setLoading(false);
       }
@@ -50,10 +48,12 @@ const PlacesList = () => {
       setError(null);
       await placesApi.save(updatedPlace);
       // of gewoon opnieuw ophalen
-      setPlaces((places) => places.map((place) => place.id === updatedPlace?.id ? updatedPlace : place));
-    } catch (error) {
-      console.error(error);
-      setError(error);
+      setPlaces(
+        places.map((place) => (place.id === updatedPlace?.id ? updatedPlace : place)),
+      );
+    } catch (err) {
+      console.error(err);
+      setError(err);
     }
   }, []);
 
