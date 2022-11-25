@@ -48,10 +48,8 @@ const useTransactions = () => {
       method: id ? 'PUT' : 'POST',
       url: `${baseUrl}/${id ?? ''}`,
       data: values,
-      config: {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }, [getAccessTokenSilently]);

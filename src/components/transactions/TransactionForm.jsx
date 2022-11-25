@@ -1,15 +1,12 @@
 import { memo, useEffect, useState } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
+import { useAuth0 } from '@auth0/auth0-react';
 import useTransactions from '../../api/transactions';
 import usePlaces from '../../api/places';
 import Error from '../Error';
 
 const validationRules = {
-  user: {
-    required: 'this is required',
-    minLength: { value: 2, message: 'Min length is 2' },
-  },
   date: { required: 'this is required' },
   place: { required: 'this is required' },
   amount: {
@@ -129,6 +126,9 @@ function PlacesSelect(props) {
 }
 
 const TransactionForm = memo(() => {
+  const {
+    user,
+  } = useAuth0();
   const [error, setError] = useState(null);
   const {
     setValue, register, handleSubmit, reset, formState: { errors, isSubmitting },
@@ -139,15 +139,14 @@ const TransactionForm = memo(() => {
 
   const onSubmit = async (data) => {
     const {
-      user, place, amount, date,
+      place, amount, date,
     } = data;
     try {
       setError(null);
       await save({
         id,
-        user,
         placeId: place,
-        amount: parseInt(amount, 2),
+        amount: parseInt(amount, 10),
         date: new Date(date),
       });
       navigate('/');
@@ -167,7 +166,6 @@ const TransactionForm = memo(() => {
       try {
         setError(null);
         const transaction = await getById(id);
-        setValue('user', transaction.user.name);
         setValue('place', transaction.place.id);
         setValue('amount', transaction.amount);
         setValue('date', toDateInputString(transaction.date));
@@ -194,12 +192,11 @@ const TransactionForm = memo(() => {
         isSubmitting={isSubmitting}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="w-50 mb-3">
-          <LabelInput
-            label="User"
-            name="user"
-            type="user"
-            data-cy="user_input"
-          />
+          <p>
+            This transaction will be created for
+            {' '}
+            {user.name}
+          </p>
 
           <LabelInput
             label="Date"
