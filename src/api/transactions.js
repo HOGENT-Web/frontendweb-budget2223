@@ -3,36 +3,23 @@ import {
 } from '@auth0/auth0-react';
 import axios from 'axios';
 import {
-  useState,
-  useEffect,
   useCallback,
 } from 'react';
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/transactions`;
 
 const useTransactions = () => {
-  const [token, setToken] = useState(null);
   const {
     getAccessTokenSilently,
   } = useAuth0();
 
-  useEffect(() => {
-    async function getToken() {
-      const newToken = await getAccessTokenSilently();
-      // axios.defaults.headers['Authorization'] = `Bearer ${token}`;
-      setToken(newToken);
-    }
-    getToken();
-  }, [getAccessTokenSilently]);
-
   const getAll = useCallback(async () => {
-    const newToken = await getAccessTokenSilently();
-    console.log(`calling getAll with token: ${newToken}`);
+    const token = await getAccessTokenSilently();
     const {
       data,
     } = await axios.get(baseUrl, {
       headers: {
-        Authorization: `Bearer ${newToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -40,6 +27,7 @@ const useTransactions = () => {
   }, [getAccessTokenSilently]);
 
   const getById = useCallback(async (id) => {
+    const token = await getAccessTokenSilently();
     const {
       data,
     } = await axios.get(`${baseUrl}/${id}`, {
@@ -48,9 +36,10 @@ const useTransactions = () => {
       },
     });
     return data;
-  }, [token]);
+  }, [getAccessTokenSilently]);
 
   const save = useCallback(async (transaction) => {
+    const token = await getAccessTokenSilently();
     const {
       id,
       ...values
@@ -65,15 +54,16 @@ const useTransactions = () => {
         },
       },
     });
-  }, [token]);
+  }, [getAccessTokenSilently]);
 
   const deleteById = useCallback(async (id) => {
+    const token = await getAccessTokenSilently();
     await axios.delete(`${baseUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-  }, [token]);
+  }, [getAccessTokenSilently]);
 
   return {
     getAll,

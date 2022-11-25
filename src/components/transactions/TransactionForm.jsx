@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import useTransactions from '../../api/transactions';
-import * as placesApi from '../../api/places';
+import usePlaces from '../../api/places';
 import Error from '../Error';
 
 const validationRules = {
@@ -69,6 +69,7 @@ function LabelInput({
 
 function PlacesSelect(props) {
   const name = 'place';
+  const placesApi = usePlaces();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [places, setPlaces] = useState([]);

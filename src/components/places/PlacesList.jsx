@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
-import * as placesApi from '../../api/places';
 import Place from './Place';
 import Error from '../Error';
 import Loader from '../Loader';
+import usePlaces from '../../api/places';
 
 function PlacesCards({ places, onRate }) {
   return (
@@ -21,6 +21,7 @@ function PlacesCards({ places, onRate }) {
 }
 
 function PlacesList() {
+  const placesApi = usePlaces();
   const [places, setPlaces] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
