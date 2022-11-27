@@ -16,9 +16,9 @@ const amountFormat = new Intl.NumberFormat('nl-BE', {
   minimumFractionDigits: 2,
 });
 
-export default memo(({
+function Transaction({
   id, user, amount, place, date, onDelete,
-}) => {
+}) {
   const handleDelete = useCallback((event) => {
     event.preventDefault();
     onDelete(id);
@@ -46,4 +46,6 @@ export default memo(({
       </td>
     </tr>
   );
-});
+}
+
+export default memo(Transaction);

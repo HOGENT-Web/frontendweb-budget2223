@@ -57,7 +57,6 @@ export default function TransactionList() {
       const data = await getAll();
       setTransactions(data);
     } catch (err) {
-      console.error(err);
       setError(err);
     } finally {
       setLoading(false);
@@ -75,7 +74,6 @@ export default function TransactionList() {
       // of gewoon opnieuw ophalen
       setTransactions((list) => list.filter(({ id }) => id !== idToDelete));
     } catch (err) {
-      console.error(err);
       setError(err);
     }
   }, [deleteById]);

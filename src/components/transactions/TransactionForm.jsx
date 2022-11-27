@@ -84,7 +84,6 @@ function PlacesSelect(props) {
         const allPlaces = await placesApi.getAll();
         setPlaces(allPlaces);
       } catch (err) {
-        console.error(err);
         setError(err.message || 'Failed to fetch the places, try again later');
       } finally {
         setLoading(false);
@@ -125,7 +124,7 @@ function PlacesSelect(props) {
   );
 }
 
-const TransactionForm = memo(() => {
+function TransactionForm() {
   const {
     user,
   } = useAuth0();
@@ -151,7 +150,6 @@ const TransactionForm = memo(() => {
       });
       navigate('/');
     } catch (err) {
-      console.error(err);
       setError(err);
     }
   };
@@ -170,7 +168,6 @@ const TransactionForm = memo(() => {
         setValue('amount', transaction.amount);
         setValue('date', toDateInputString(transaction.date));
       } catch (err) {
-        console.error(err);
         setError(err);
       }
     };
@@ -233,6 +230,6 @@ const TransactionForm = memo(() => {
       </FormProvider>
     </>
   );
-});
+}
 
-export default TransactionForm;
+export default memo(TransactionForm);

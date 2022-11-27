@@ -34,7 +34,6 @@ function PlacesList() {
         const data = await placesApi.getAll();
         setPlaces(data);
       } catch (err) {
-        console.error(err);
         setError(err);
       } finally {
         setLoading(false);
@@ -53,7 +52,6 @@ function PlacesList() {
         places.map((place) => (place.id === updatedPlace?.id ? updatedPlace : place)),
       );
     } catch (err) {
-      console.error(err);
       setError(err);
     }
   }, []);

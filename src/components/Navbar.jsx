@@ -23,7 +23,7 @@ function NavItem({ label, to }) {
   );
 }
 
-export default memo(() => {
+function NavBar() {
   const { theme, toggleTheme } = useTheme();
   const { isAuthenticated } = useAuth0();
 
@@ -55,4 +55,6 @@ export default memo(() => {
       </div>
     </nav>
   );
-});
+}
+
+export default memo(NavBar);

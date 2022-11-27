@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import { IoStarSharp } from 'react-icons/io5';
 
-const Star = memo(({ index, selected = false, onSelect = (f) => f }) => {
+function Star({ index, selected = false, onSelect = (f) => f }) {
   const handleSelect = useCallback(() => {
     onSelect(index + 1);
   }, [index, onSelect]);
@@ -12,7 +12,9 @@ const Star = memo(({ index, selected = false, onSelect = (f) => f }) => {
       onClick={handleSelect}
     />
   );
-});
+}
+
+const MemoizedStar = memo(Star);
 
 export default function StarRating({ totalStars = 5, selectedStars = 0, onRate }) {
   const stars = useMemo(
@@ -23,7 +25,7 @@ export default function StarRating({ totalStars = 5, selectedStars = 0, onRate }
   return (
     <>
       {stars.map((_, i) => (
-        <Star
+        <MemoizedStar
           // eslint-disable-next-line react/no-array-index-key
           key={i}
           index={i}

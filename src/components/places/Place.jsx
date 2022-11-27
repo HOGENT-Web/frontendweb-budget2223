@@ -2,9 +2,9 @@ import { memo, useCallback } from 'react';
 import { useThemeColors } from '../../contexts/Theme.context';
 import StarRating from './StarRating';
 
-const Place = memo(({
+function Place({
   id, name, rating, onRate,
-}) => {
+}) {
   const { theme, oppositeTheme } = useThemeColors();
 
   const handleRate = useCallback(async (newRating) => {
@@ -26,6 +26,6 @@ const Place = memo(({
       </div>
     </div>
   );
-});
+}
 
-export default Place;
+export default memo(Place);
