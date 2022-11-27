@@ -1,6 +1,0 @@
-{
-  "domain": "dev-mwcoychn2w0hjcv1.eu.auth0.com",
-  "clientId": "OCYF0z0NoRHgBGbgk8EhjoYk6yzg08cP",
-  "audience": "http://localhost:9000/api/",
-  "scope": "read:current_user update:current_user_metadata"
-}
