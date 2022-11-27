@@ -2,14 +2,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useCallback } from 'react';
 
 function LoginButton() {
-  const { loginWithRedirect, getAccessTokenSilently } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
 
   const handleLogin = useCallback(
-
-    async () => {
-      loginWithRedirect();
-    },
-    [loginWithRedirect, getAccessTokenSilently],
+    () => loginWithRedirect(),
+    [loginWithRedirect],
   );
 
   return (

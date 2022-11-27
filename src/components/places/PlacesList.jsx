@@ -41,7 +41,7 @@ function PlacesList() {
     };
 
     fetchPlaces();
-  }, []);
+  }, [placesApi]);
 
   const handleRatePlace = useCallback(async (updatedPlace) => {
     try {
@@ -49,12 +49,12 @@ function PlacesList() {
       await placesApi.save(updatedPlace);
       // of gewoon opnieuw ophalen
       setPlaces(
-        places.map((place) => (place.id === updatedPlace?.id ? updatedPlace : place)),
+        (oldPlaces) => oldPlaces.map((p) => (p.id === updatedPlace?.id ? updatedPlace : p)),
       );
     } catch (err) {
       setError(err);
     }
-  }, []);
+  }, [placesApi]);
 
   return (
     <>

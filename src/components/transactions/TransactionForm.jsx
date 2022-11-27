@@ -91,7 +91,7 @@ function PlacesSelect(props) {
     };
 
     fetchPlaces();
-  }, []);
+  }, [placesApi]);
 
   const hasError = name in errors;
 
