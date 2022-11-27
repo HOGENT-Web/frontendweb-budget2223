@@ -1,10 +1,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './index.css';
 import { ThemeProvider } from './contexts/Theme.context';
-import { BrowserRouter } from "react-router-dom";
 
 const root = createRoot(document.getElementById('root'));
 root.render(
@@ -14,6 +14,6 @@ root.render(
         <App />
       </BrowserRouter>
     </ThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 reportWebVitals();

@@ -1,12 +1,12 @@
 import { memo } from 'react';
 import {
   IoMoonSharp,
-  IoSunny
+  IoSunny,
 } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
-import { useTheme, themes, useThemeColors } from "../contexts/Theme.context";
+import { useTheme, themes, useThemeColors } from '../contexts/Theme.context';
 
-const NavItem = ({ label, to }) => {
+function NavItem({ label, to }) {
   const { oppositeTheme } = useThemeColors();
 
   return (
@@ -19,16 +19,16 @@ const NavItem = ({ label, to }) => {
       </Link>
     </li>
   );
-};
+}
 
-export default memo(function Navbar() {
+function NavBar() {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className={`navbar navbar-expand-lg bg-${theme} mb-4`}>
       <div className="container-fluid">
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" />
         </button>
 
         <div className="collapse navbar-collapse" id="navbar">
@@ -37,8 +37,8 @@ export default memo(function Navbar() {
             <NavItem label="Places" to="/places" />
           </ul>
           <div className="d-flex">
-            <button type="button" onClick={toggleTheme} >
-                {
+            <button type="button" onClick={toggleTheme}>
+              {
                     theme === themes.dark ? <IoMoonSharp /> : <IoSunny />
                 }
             </button>
@@ -47,4 +47,6 @@ export default memo(function Navbar() {
       </div>
     </nav>
   );
-})
+}
+
+export default memo(NavBar);

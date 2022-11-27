@@ -4,7 +4,7 @@ const baseUrl = `${process.env.REACT_APP_API_URL}/transactions`;
 
 export const getAll = async () => {
   const {
-    data
+    data,
   } = await axios.get(baseUrl);
 
   return data.items;
@@ -12,7 +12,7 @@ export const getAll = async () => {
 
 export const getById = async (id) => {
   const {
-    data
+    data,
   } = await axios.get(`${baseUrl}/${id}`);
 
   return data;
@@ -20,7 +20,7 @@ export const getById = async (id) => {
 
 export const deleteById = async (id) => {
   await axios.delete(
-    `${baseUrl}/${id}`
+    `${baseUrl}/${id}`,
   );
 };
 

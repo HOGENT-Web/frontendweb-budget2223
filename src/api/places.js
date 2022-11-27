@@ -4,7 +4,7 @@ const baseUrl = `${process.env.REACT_APP_API_URL}/places`;
 
 export const getAll = async () => {
   const {
-    data
+    data,
   } = await axios.get(baseUrl);
 
   return data.items;
