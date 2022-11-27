@@ -14,7 +14,9 @@
   "extends": [
         "eslint:recommended",
         "airbnb",
-        "plugin:react/recommended"
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:import/recommended"
   ],
   "rules": {
         "react/react-in-jsx-scope": "off",
