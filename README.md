@@ -19,4 +19,17 @@ Then run `yarn start`.
 
 First, install the dependencies using `yarn install`.
 
+Create a `cypress.env.json`:
+
+```json
+{
+  "auth_audience": "{YOUR_API_IDENTIFIER}",
+  "auth_url": "https://{YOUR_DOMAIN}/oauth/token",
+  "auth_client_id": "{YOUR_CLIENT_ID}",
+  "auth_client_secret": "{YOUR_CLIENT_SECRET}",
+  "auth_username": "{YOUR_TEST_USERNAME}",
+  "auth_password": "{YOUR_TEST_PASSWORD}"
+}
+```
+
 Then run `yarn test`.

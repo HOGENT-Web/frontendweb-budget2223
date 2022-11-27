@@ -1,4 +1,8 @@
 describe('transactions test', () => {
+  beforeEach(() => {
+    cy.login();
+  });
+
   it('show transactions', () => {
     cy.intercept(
       'GET',

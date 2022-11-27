@@ -9,6 +9,7 @@ function LogoutButton() {
       onClick={() => logout({
         returnTo: window.location.origin,
       })}
+      data-cy="logout_btn"
     >
       Log Out
     </button>
