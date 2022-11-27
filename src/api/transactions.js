@@ -3,7 +3,7 @@ import {
 } from '@auth0/auth0-react';
 import axios from 'axios';
 import {
-  useCallback,
+  useCallback, useMemo,
 } from 'react';
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/transactions`;
@@ -63,12 +63,14 @@ const useTransactions = () => {
     });
   }, [getAccessTokenSilently]);
 
-  return {
+  const transactionsApi = useMemo(() => ({
     getAll,
     getById,
     save,
     deleteById,
-  };
+  }), [getAll, getById, save, deleteById]);
+
+  return transactionsApi;
 };
 
 export default useTransactions;

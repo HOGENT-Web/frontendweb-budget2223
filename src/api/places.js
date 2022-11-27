@@ -2,6 +2,7 @@ import {
   useAuth0,
 } from '@auth0/auth0-react';
 import axios from 'axios';
+import { useCallback, useMemo } from 'react';
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/places`;
 
@@ -10,7 +11,7 @@ const usePlaces = () => {
     getAccessTokenSilently,
   } = useAuth0();
 
-  const getAll = async () => {
+  const getAll = useCallback(async () => {
     const token = await getAccessTokenSilently();
     const {
       data,
@@ -21,9 +22,9 @@ const usePlaces = () => {
     });
 
     return data.items;
-  };
+  }, [getAccessTokenSilently]);
 
-  const save = async (place) => {
+  const save = useCallback(async (place) => {
     const token = await getAccessTokenSilently();
     const {
       id,
@@ -37,12 +38,13 @@ const usePlaces = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-  };
+  }, [getAccessTokenSilently]);
 
-  return {
+  const placesApi = useMemo(() => ({
     getAll,
     save,
-  };
+  }), [getAll, save]);
+  return placesApi;
 };
 
 export default usePlaces;
